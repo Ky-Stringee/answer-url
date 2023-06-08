@@ -29,6 +29,9 @@ var recordAction = {
 
 app.get('/app-to-app', function (req, res) {
     connectAction.from.type = connectAction.to.type = "internal";
+    var urlParams = new URLSearchParams(parse.search);
+    connectAction.from.number = connectAction.from.alias = urlParams.get("from");
+    connectAction.to.number = connectAction.to.alias = urlParams.get("to");
     res.send([recordAction, connectAction]);
 })
 
