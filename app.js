@@ -28,6 +28,21 @@ var recordAction = {
     "format": "mp3"
 }
 
+app.get('/app-to-app', function (req, res) {
+    var query = url.parse(req.originalUrl, true);
+    if (query.search)
+        var queryObj = parseQuery(query.search);
+    connectAction.from.type = "internal";
+    connectAction.to.type = "internal";
+    if (queryObj) {
+        connectAction.from.number = connectAction.from.alias = queryObj.from ? queryObj.from : "";
+        connectAction.to.number = connectAction.to.alias = queryObj.to ? queryObj.to : "";
+        connectAction.customData = queryObj.custom ? queryObj.custom : "";
+    }
+    res.setHeader('content-type', 'application/json');
+    res.send([recordAction, connectAction]);
+})
+
 app.get('/app-to-phone', function (req, res) {
     var query = url.parse(req.originalUrl, true);
     if (query.search)
