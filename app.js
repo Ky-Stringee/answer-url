@@ -1,4 +1,5 @@
 const express = require("express");
+const internal = require("stream");
 const app = express();
 const url = require("url");
 const port = process.env.PORT || 3000;
@@ -27,35 +28,30 @@ var recordAction = {
     "format": "mp3"
 }
 
-app.get('/app-to-app', function (req, res) {
-    connectAction.from.type = connectAction.to.type = "internal";
-    res.contentType('application/json').send([recordAction, connectAction]);
-})
-
 app.get('/app-to-phone', function (req, res) {
+    var query = url.parse(req.originalUrl, true);
+    if (query.search)
+        var queryObj = parseQuery(query.search);
     connectAction.from.type = "internal";
     connectAction.to.type = "external";
-    res.contentType('application/json').send([recordAction, connectAction]);
+    if (queryObj) {
+        connectAction.from.number = connectAction.from.alias = queryObj.from ? queryObj.from : "";
+        connectAction.to.number = connectAction.to.alias = queryObj.to ? queryObj.to : "";
+        connectAction.customData = queryObj.custom ? queryObj.custom : "";
+    }
+    res.setHeader('content-type', 'application/json');
+    res.send([recordAction, connectAction]);
 })
 
-app.get('/phone-to-app', function (req, res) {
-    var parse = url.parse(req.originalUrl, true);
-    var userID = parse.search.replace('?','');
-    connectAction.to.number = connectAction.to.alias = userID;
-    connectAction.from.type = "external";
-    connectAction.to.type = "internal";
-    res.contentType('application/json').send([recordAction, connectAction]);
-})
-
-app.get('/phone-to-phone', function (req, res) {
-    var parse = url.parse(req.originalUrl, true);
-    var urlParams = new URLSearchParams(parse.search);
-    connectAction.from.number = connectAction.from.alias = urlParams.get("from");
-    connectAction.to.number = connectAction.to.alias = urlParams.get("to");
-    connectAction.from.type = "external";
-    connectAction.to.type = "external";
-    res.contentType('application/json').res.send([recordAction, connectAction]);
-})
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+    return query;
+}
 
 app.listen(port, function () {
     console.log("Your app running on port " + port);
