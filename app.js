@@ -29,16 +29,13 @@ var recordAction = {
 
 app.get('/app-to-app', function (req, res) {
     connectAction.from.type = connectAction.to.type = "internal";
-    var urlParams = new URLSearchParams(parse.search);
-    connectAction.from.number = connectAction.from.alias = urlParams.get("from");
-    connectAction.to.number = connectAction.to.alias = urlParams.get("to");
-    res.send([recordAction, connectAction]);
+    res.contentType('application/json').send([recordAction, connectAction]);
 })
 
 app.get('/app-to-phone', function (req, res) {
     connectAction.from.type = "internal";
     connectAction.to.type = "external";
-    res.send([recordAction, connectAction]);
+    res.contentType('application/json').send([recordAction, connectAction]);
 })
 
 app.get('/phone-to-app', function (req, res) {
@@ -47,7 +44,7 @@ app.get('/phone-to-app', function (req, res) {
     connectAction.to.number = connectAction.to.alias = userID;
     connectAction.from.type = "external";
     connectAction.to.type = "internal";
-    res.send([recordAction, connectAction]);
+    res.contentType('application/json').send([recordAction, connectAction]);
 })
 
 app.get('/phone-to-phone', function (req, res) {
@@ -57,7 +54,7 @@ app.get('/phone-to-phone', function (req, res) {
     connectAction.to.number = connectAction.to.alias = urlParams.get("to");
     connectAction.from.type = "external";
     connectAction.to.type = "external";
-    res.send([recordAction, connectAction]);
+    res.contentType('application/json').res.send([recordAction, connectAction]);
 })
 
 app.listen(port, function () {
