@@ -17,7 +17,7 @@ var connectAction = {
     },
     "customData": "",
     "timeout": 60,
-    "maxConnectTime": -1,
+    "maxConnectTime": 0,
     "peerToPeerCall": false
 }
 
