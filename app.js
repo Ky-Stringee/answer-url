@@ -75,6 +75,21 @@ app.get('/phone-to-app', function (req, res) {
     res.send([recordAction, connectAction]);
 })
 
+app.get('/phone-to-phone', function (req, res) {
+    var query = url.parse(req.originalUrl, true);
+    if (query.search)
+        var queryObj = parseQuery(query.search);
+    connectAction.from.type = "external";
+    connectAction.to.type = "external";
+    connectAction.from.number = connectAction.from.alias = queryObj.fromNumber;
+    connectAction.to.number = connectAction.to.alias = queryObj.toNumber;
+    if (queryObj) {
+        connectAction.customData = queryObj.custom ? queryObj.custom : "";
+    }
+    res.setHeader('content-type', 'application/json');
+    res.send([recordAction, connectAction]);
+})
+
 function parseQuery(queryString) {
     var query = {};
     var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
