@@ -66,6 +66,7 @@ app.get('/phone-to-app', function (req, res) {
         var queryObj = parseQuery(query.search);
     connectAction.from.type = "external";
     connectAction.to.type = "internal";
+    connectAction.to.number = connectAction.to.alias = queryObj.toNumber;
     if (queryObj) {
         connectAction.from.number = connectAction.from.alias = queryObj.from ? queryObj.from : "";
         connectAction.to.number = connectAction.to.alias = queryObj.to ? queryObj.to : "";
