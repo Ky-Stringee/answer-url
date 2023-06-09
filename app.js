@@ -69,7 +69,6 @@ app.get('/phone-to-app', function (req, res) {
     connectAction.to.number = connectAction.to.alias = queryObj.toNumber;
     if (queryObj) {
         connectAction.from.number = connectAction.from.alias = queryObj.from ? queryObj.from : "";
-        connectAction.to.number = connectAction.to.alias = queryObj.to ? queryObj.to : "";
         connectAction.customData = queryObj.custom ? queryObj.custom : "";
     }
     res.setHeader('content-type', 'application/json');
