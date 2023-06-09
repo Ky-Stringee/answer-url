@@ -18,7 +18,9 @@ var connectAction = {
     },
     "customData": "",
     "timeout": 60,
-    "maxConnectTime": 0,
+    "continueOnFail": false,
+    "onFailEventUrl": "",
+    "maxConnectTime": -1,
     "peerToPeerCall": false
 }
 
@@ -49,6 +51,21 @@ app.get('/app-to-phone', function (req, res) {
         var queryObj = parseQuery(query.search);
     connectAction.from.type = "internal";
     connectAction.to.type = "external";
+    if (queryObj) {
+        connectAction.from.number = connectAction.from.alias = queryObj.from ? queryObj.from : "";
+        connectAction.to.number = connectAction.to.alias = queryObj.to ? queryObj.to : "";
+        connectAction.customData = queryObj.custom ? queryObj.custom : "";
+    }
+    res.setHeader('content-type', 'application/json');
+    res.send([recordAction, connectAction]);
+})
+
+app.get('/phone-to-app', function (req, res) {
+    var query = url.parse(req.originalUrl, true);
+    if (query.search)
+        var queryObj = parseQuery(query.search);
+    connectAction.from.type = "external";
+    connectAction.to.type = "internal";
     if (queryObj) {
         connectAction.from.number = connectAction.from.alias = queryObj.from ? queryObj.from : "";
         connectAction.to.number = connectAction.to.alias = queryObj.to ? queryObj.to : "";
